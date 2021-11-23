@@ -1,14 +1,19 @@
 package it.unibo.oop.lab.iogui;
 
 import java.awt.BorderLayout;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Random;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -38,7 +43,24 @@ public class BadIOGUI {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
+        //EX01.01
+        final JPanel pan2 = new JPanel();
+        pan2.setLayout(new BoxLayout(pan2, BoxLayout.LINE_AXIS));
+        canvas.add(pan2, BorderLayout.CENTER);
+        pan2.add(write);
+        //EX01.02
+        final JButton read = new JButton("Read");
+        pan2.add(read);
+        read.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                try {
+                    System.out.println("Lettura: " + Files.readAllLines(Paths.get(PATH)));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /*
@@ -56,6 +78,7 @@ public class BadIOGUI {
                  */
                 try (PrintStream ps = new PrintStream(PATH)) {
                     ps.print(rng.nextInt());
+                    System.out.println("Scrittura in corso...");
                 } catch (FileNotFoundException e1) {
                     JOptionPane.showMessageDialog(frame, e1, "Error", JOptionPane.ERROR_MESSAGE);
                     e1.printStackTrace();
