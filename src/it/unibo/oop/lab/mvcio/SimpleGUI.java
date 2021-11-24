@@ -49,7 +49,6 @@ public final class SimpleGUI {
         final JPanel canvas = new JPanel();
         final JTextArea area = new JTextArea();
         final JButton save = new JButton("Save");
-        area.setLayout(new BorderLayout());
         canvas.setLayout(new BorderLayout());
         canvas.add(area);
         canvas.add(save, BorderLayout.SOUTH);
