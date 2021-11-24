@@ -1,5 +1,10 @@
 package it.unibo.oop.lab.mvcio;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  * 
  */
@@ -27,5 +32,34 @@ public class Controller {
      * System.getProperty("file.separator"). The combined use of those methods leads
      * to a software that runs correctly on every platform.
      */
-
+    private static final String PATH = System.getProperty("user.home") + System.getProperty("file.separator") + "output.txt";
+    private File file = new File(PATH);
+    /**
+     * Sets an existing file as current.
+     * @param file
+     */
+    public void setFile(final File file) {
+        this.file = file;
+    }
+    /**
+     * Returns the current file.
+     * @return file
+     */
+    public File getFile() {
+        return this.file;
+    }
+    /**
+     * Returns the current file path.
+     * @return PATH
+     */
+    public String getPath() {
+        return PATH;
+    }
+    /**
+     * Writes a string into the current file.
+     * @param string
+     */
+    public void writeOnFile(final String string) throws IOException {
+        Files.writeString(Paths.get(PATH), string);
+    }
 }
