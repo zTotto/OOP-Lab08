@@ -50,36 +50,42 @@ public final class SimpleGUIWithFileChooser {
      * things separated.
      */
     private final JFrame frame = new JFrame(TITLE);
-    private static final String TITLE = "My first Java graphical interface";
+    private static final String TITLE = "My second Java graphical interface";
 
     /**
      * Builds a new {@link SimpleGUIWithFileChooser}.
      * 
      * @param cont
      */
-    public SimpleGUIWithFileChooser(final Controller cont) {
-        //Panels
+    private SimpleGUIWithFileChooser(final Controller cont) {
+        // Panels
         final JPanel panBrowse = new JPanel();
         final JPanel panText = new JPanel();
         panText.setLayout(new BorderLayout());
         panBrowse.setLayout(new BorderLayout());
-        //String saver
+        // String saver
         final JTextArea area = new JTextArea();
         final JButton save = new JButton("Save");
-        //File chooser
+        // File chooser
         final JTextField pathField = new JTextField();
         final JButton browser = new JButton("Browse files");
-        final JFileChooser chooser = new JFileChooser("Choose file where to write");
-        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        //Layout
+        // Layout
         panText.add(area, BorderLayout.CENTER);
         panText.add(save, BorderLayout.SOUTH);
         panBrowse.add(pathField, BorderLayout.CENTER);
         panBrowse.add(browser, BorderLayout.LINE_END);
         panText.add(panBrowse, BorderLayout.NORTH);
-        //Functions
+        // Base operations
+        frame.setContentPane(panText);
+        final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        final int sw = (int) screen.getWidth();
+        final int sh = (int) screen.getHeight();
+        frame.setSize(sw / 3, sh / 3);
+        frame.setLocationByPlatform(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Functions
         pathField.setEditable(false);
-        save.addActionListener(new ActionListener() {   //Save button action
+        save.addActionListener(new ActionListener() { // Save button action
 
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -94,6 +100,11 @@ public final class SimpleGUIWithFileChooser {
 
             @Override
             public void actionPerformed(final ActionEvent e) {
+                final JFileChooser chooser = new JFileChooser("Choose file where to write");
+                chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                final Dimension chooserSize = screen;
+                chooserSize.setSize(screen.getWidth() / 3, screen.getHeight() / 3);
+                chooser.setPreferredSize(chooserSize);
                 final int returnVal = chooser.showSaveDialog(frame);
                 switch (returnVal) {
                 case JFileChooser.CANCEL_OPTION:
@@ -108,17 +119,6 @@ public final class SimpleGUIWithFileChooser {
                 }
             }
         });
-        //Base operations
-        frame.setContentPane(panText);
-        final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        final int sw = (int) screen.getWidth();
-        final int sh = (int) screen.getHeight();
-        final Dimension chooserSize = screen;
-        chooserSize.setSize(screen.getWidth() / 3, screen.getHeight() / 3);
-        chooser.setPreferredSize(chooserSize);
-        frame.setSize(sw / 3, sh / 3);
-        frame.setLocationByPlatform(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void display() {
