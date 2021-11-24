@@ -30,4 +30,9 @@ public interface DrawNumberView {
      */
     void limitsReached();
 
+    /**
+     * An unpredicted situation happened, reporting to user.
+     * @param message
+     */
+    void displayError(String message);
 }
