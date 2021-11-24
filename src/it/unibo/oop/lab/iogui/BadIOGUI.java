@@ -2,7 +2,6 @@ package it.unibo.oop.lab.iogui;
 
 import java.awt.BorderLayout;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.awt.Dimension;
 import java.awt.Toolkit;
