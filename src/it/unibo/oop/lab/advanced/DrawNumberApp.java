@@ -1,9 +1,13 @@
 package it.unibo.oop.lab.advanced;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -14,17 +18,22 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
     private static int max = 100;
     private static int attempts = 10;
     private final DrawNumber model;
-    private final DrawNumberView view;
+    private final List<DrawNumberView> view;
 
     /**
+     * Constructor for the application, with multiple views.
      * 
+     * @param view
      */
-    public DrawNumberApp() {
+    public DrawNumberApp(final DrawNumberView... view) {
         loadFromConfig();
         this.model = new DrawNumberImpl(min, max, attempts);
-        this.view = new DrawNumberViewImpl();
-        this.view.setObserver(this);
-        this.view.start();
+        this.view = new LinkedList<>();
+        Collections.addAll(this.view, view);
+        for (final DrawNumberView v : this.view) {
+            v.setObserver(this);
+            v.start();
+        }
     }
 
     @SuppressWarnings("PMD.CloseResource")
@@ -43,7 +52,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
                     min = Integer.parseInt(tokenizer.nextToken());
                 } else if (line.contains("max")) {
                     max = Integer.parseInt(tokenizer.nextToken());
-                } else if  (line.contains("attempts")) {
+                } else if (line.contains("attempts")) {
                     attempts = Integer.parseInt(tokenizer.nextToken());
                 }
             }
@@ -51,7 +60,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             e.printStackTrace();
         }
 
-        //Closing input stream
+        // Closing input stream
         try {
             inStream.close();
             reader.close();
@@ -62,13 +71,15 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
 
     @Override
     public void newAttempt(final int n) {
-        try {
-            final DrawResult result = model.attempt(n);
-            this.view.result(result);
-        } catch (IllegalArgumentException e) {
-            this.view.numberIncorrect();
-        } catch (AttemptsLimitReachedException e) {
-            view.limitsReached();
+        for (final DrawNumberView v : this.view) {
+            try {
+                final DrawResult result = model.attempt(n);
+                v.result(result);
+            } catch (IllegalArgumentException e) {
+                v.numberIncorrect();
+            } catch (AttemptsLimitReachedException e) {
+                v.limitsReached();
+            }
         }
     }
 
@@ -86,9 +97,15 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
     /**
      * @param args
      *                 ignored
+     * @throws FileNotFoundException 
      */
-    public static void main(final String... args) {
-        new DrawNumberApp();
+    public static void main(final String... args) throws FileNotFoundException {
+        new DrawNumberApp(
+                new DrawNumberViewImpl(),
+                //new DrawNumberViewImpl(),
+                new LoggerView("output.txt"),
+                new LoggerView(System.out)
+                );
     }
 
 }
